@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&family=Rubik:wght@400;500;600;700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--magnolia);
+}
+
+// font
+html {
+    font-family: 'Nunito Sans', sans-serif;
+    font-family: 'Rubik', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+:root {
+    /* PRIMARY */
+    --marine-blue: hsl(213, 96%, 18%);
+    --purplish-blue: hsl(243, 100%, 62%);
+    --pastel-blue: hsl(228, 100%, 84%);
+    --light-blue: hsl(206, 94%, 87%);
+    --strawberry-red: hsl(354, 84%, 57%);
+    /* NEUTRAL */
+    --cool-gray: hsl(231, 11%, 63%);
+    --light-gray: hsl(229, 24%, 87%);
+    --magnolia: hsl(217, 100%, 97%);
+    --alabaster: hsl(231, 100%, 99%);
+    --white: hsl(0, 0%, 100%);
+    /* SPACES */
+    --sidebar-width: 250px;
+}
+
+@media (min-width: 769px) {
+    main {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 12px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        height: 500px;
+    }
+}
