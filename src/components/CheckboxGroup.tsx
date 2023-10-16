@@ -1,17 +1,19 @@
 import React from 'react'
 import styled from 'styled-components';
-import {useForm} from "react-hook-form";
+import {UseFormRegister, useForm, Controller} from "react-hook-form";
+import { IFormValues } from '../types';
 
 type ICheckbox = {
     isPlanMonthly: boolean;
     title: string;
     subtitle: string;
     id: string;
+    register: UseFormRegister<IFormValues>;
 }
 
-const CheckboxGroup = ({isPlanMonthly, title, subtitle, id}: ICheckbox) => {
+const CheckboxGroup = ({isPlanMonthly, title, subtitle, id, register}: ICheckbox) => {
 
-    const {register} = useForm();
+    const {control} = useForm();
 
     const price = id === 'online-service' ? 1 : id === 'larger-storage' || 'customizable-profile' ? 2 : 0;
     const calculatedPrice = isPlanMonthly ? `${price}/mo` : `${price * 10}/yr`
@@ -20,7 +22,17 @@ const CheckboxGroup = ({isPlanMonthly, title, subtitle, id}: ICheckbox) => {
     <CheckboxWrapper>
         <Label>
             <LabelWrapper>
-                <CheckboxInput {...register(id)} id={id} type='checkbox'/>
+                <Controller
+                name='additions'
+                control={control}
+                render={() => (
+                    <CheckboxInput 
+                        id={id} 
+                        type='checkbox'
+                        name='additions'
+                    />
+                )}
+                />
                 <CheckboxName>
                     <h5>{title}</h5>
                     <span>{subtitle}</span>

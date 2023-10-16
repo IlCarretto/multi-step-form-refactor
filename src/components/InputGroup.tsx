@@ -1,25 +1,20 @@
 import React from 'react'
 import styled from "styled-components";
-import { FormData } from '../widgets/PersonalInfo';
-import { useForm } from 'react-hook-form';
-import { ValidationRules } from '../types';
+import { UseFormRegister } from 'react-hook-form';
+import { IFormValues, ValidationRules } from '../types';
 
 type InputProps = {
     label: string;
     type: string;
     placeholder?: string;
     input: 'name' | 'email' | 'phone';
-    updateFields: (fields: Partial<FormData>) => void;
     validation: ValidationRules;
+    register: UseFormRegister<IFormValues>;
+    formErrors: any;
 }
 
 function InputGroup({...props}: InputProps) {
-
-    const {
-    register,
-    formState: {errors},
-  } = useForm<FormData>();
-
+  
   return (
     <InputWrapper>
       <Label htmlFor={props.input}>{props.label}</Label>
@@ -27,9 +22,9 @@ function InputGroup({...props}: InputProps) {
       id={props.input}
       placeholder={props.placeholder}
       type={props.type}
-      {...register(props.input, props.validation)}
+      {...props.register(props.input, props.validation)}
       />
-      {errors[props.input] && <p>{errors[props.input]?.message}</p>}
+      {props.formErrors[props.input] && <p className='error'>{props.formErrors[props.input]?.message}</p>}
     </InputWrapper>
   )
 }

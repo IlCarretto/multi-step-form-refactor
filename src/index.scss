@@ -17,6 +17,15 @@ html {
     font-family: 'Ubuntu', sans-serif;
 }
 
+// common
+.error {
+    color: var(--strawberry-red);
+    font-size: 12px;
+    padding: 4px;
+    text-align: start;
+    margin-bottom: 0;
+}
+
 :root {
     /* PRIMARY */
     --marine-blue: hsl(213, 96%, 18%);

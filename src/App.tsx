@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import Sidebar from './widgets/Sidebar';
-import PersonalInfo, { FormData } from './widgets/PersonalInfo';
+import PersonalInfo from './widgets/PersonalInfo';
 import { useMultiStepForm } from './hook/useMultiStepForm';
-import { useForm,SubmitHandler } from 'react-hook-form';
+import { useForm,SubmitHandler, Controller } from 'react-hook-form';
 import SelectPlan from './widgets/SelectPlan';
 import PickAddons from './widgets/PickAddons';
 import Summary from './widgets/Summary';
@@ -10,29 +10,21 @@ import { IFormValues } from './types';
 
 function App() {
   const stepsData = [{ stepNum: 1, title: 'your info'}, { stepNum: 2, title: 'select plan'}, { stepNum: 3, title: 'add-ons'}, { stepNum: 4, title: 'summary'}];
-
-  const [data, setData] = useState<IFormValues>({
-    name: "",
-    email: "",
-    phone: "",
-    // plan: {
-    //   name: "",
-    //   price: null
-    // },
-    // additions: [],
-  });
-  function updateFields(fields: Partial<FormData>) {
-    setData((prev) => {
-      return { ...prev, ...fields };
-    });
-  }
+  
+  const {handleSubmit, watch, register, formState: {errors}, setValue, getValues} = useForm<IFormValues>({mode: 'all', defaultValues: {
+    name: '',
+    email: '',
+    phone: '',
+    plan: {name: '', price: null},
+    additions: []
+  }});
 
   const [isPlanMonthly, setIsPlanMonthly] = useState(true);
   
   const {currentStepIndex, step, steps, isFirstStep, isLastStep, goNextStep, goBackStep, goToStep } = useMultiStepForm([
-    <PersonalInfo updateFields={updateFields}/>,
-    <SelectPlan isPlanMonthly={isPlanMonthly} setIsPlanMonthly={setIsPlanMonthly}/>,
-    <PickAddons isPlanMonthly={isPlanMonthly}/>,
+    <PersonalInfo register={register} formErrors={errors}/>,
+    <SelectPlan getValues={getValues} setValue={setValue} register={register} formErrors={errors} isPlanMonthly={isPlanMonthly} setIsPlanMonthly={setIsPlanMonthly}/>,
+    <PickAddons register={register} isPlanMonthly={isPlanMonthly}/>,
     <Summary/>
   ]);
   
@@ -43,13 +35,15 @@ function App() {
     }
   }, [isLastStep])
 
-  const {handleSubmit} = useForm<IFormValues>();
-
-  const onSubmit = (data: IFormValues) => {
+  const onSubmit: SubmitHandler<IFormValues> = (data) => {
     console.log(data, "Step submitted");
     if (!isLastStep) return goNextStep();
     alert("Form submitted succesfully!");
-  }
+  };
+
+  const handleRadioChange = () => {
+    setValue('plan', { name: 'pippo', price: 1 });
+};
 
   return (
     <div className="App">
@@ -73,6 +67,7 @@ function App() {
             </button>
           )}
           </div>
+          <pre>{JSON.stringify(watch(), null, 2)}</pre>
         </form>
       </main>
     </div>

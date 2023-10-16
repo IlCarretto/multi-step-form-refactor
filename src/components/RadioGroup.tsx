@@ -1,37 +1,57 @@
 import React from 'react'
 import styled from 'styled-components';
-import {useForm} from "react-hook-form";
+import {useForm, UseFormRegister, UseFormSetValue, Controller } from "react-hook-form";
+import { IFormValues, ValidationRules } from '../types';
 
 type RadioProps = {
     labelContent: { planName: string, src: string},
     id: string;
     isMonthly: boolean;
+    register: UseFormRegister<IFormValues>;
+    validation: ValidationRules;
+    setValue: UseFormSetValue<IFormValues>;
+    getValues: any;
 }
 
-const RadioGroup = ({labelContent, id, isMonthly}: RadioProps) => {
+const RadioGroup = ({labelContent, id, isMonthly, register, validation, setValue, getValues}: RadioProps) => {
 
-    const { register } = useForm();
+    const {control} = useForm();
 
     const price = id === 'arcade' ? 9 : id === 'advanced' ? 12 : id === 'pro' ? 15 : 0;
-    const calculatedPrice = isMonthly ? `${price}/mo` : `${price * 10}/yr`
+    const calculatedPrice = isMonthly ? `${price}` : `${price * 10}`
+
+    const handleRadioChange = () => {
+        setValue('plan', { name: id, price: Number(calculatedPrice) });
+    };
+
 
   return (
     <RadioWrapper>
-        <Label>
+        <Controller
+        control={control}
+        name="plan"
+        rules={validation}
+        render={({field}) => (
+            <RadioBtn
+                {...field}
+                name='plan'
+                value={calculatedPrice}
+                type="radio" id={id}
+                onChange={handleRadioChange}
+                checked={getValues('plan.name') === id}
+            />
+        )}
+        />
+        <Label className='is-checked' htmlFor={id}>
             <LabelImg>
                 <img width="50" height="50" src={labelContent.src} alt={labelContent.planName} />
             </LabelImg>
             <LabelContent>
                 <PlanName>{labelContent.planName}</PlanName>
-                <Price>$ {calculatedPrice}</Price>
+                <Price>$ {calculatedPrice}{isMonthly ? '/mo' : '/yr'}</Price>
                 {!isMonthly && <small>2 months free</small>}
             </LabelContent>
         </Label>
-        <RadioBtn
-            value={calculatedPrice}
-            type="radio" id={id}
-            {...register("plan")}
-        />
     </RadioWrapper>
   )
 }
@@ -48,8 +68,7 @@ const RadioBtn = styled.input`
 appearance: none;
 
     &:checked + label {
-        border: 1px solid var(--marine-blue);
-        background-color: red;
+        border: 1px solid var(--marine-blue)!important;
     }
 `
 
