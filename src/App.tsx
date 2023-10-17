@@ -7,6 +7,7 @@ import SelectPlan from './widgets/SelectPlan';
 import PickAddons from './widgets/PickAddons';
 import Summary from './widgets/Summary';
 import { IFormValues } from './types';
+import ThankYou from './widgets/ThankYou';
 
 function App() {
   const stepsData = [{ stepNum: 1, title: 'your info'}, { stepNum: 2, title: 'select plan'}, { stepNum: 3, title: 'add-ons'}, { stepNum: 4, title: 'summary'}];
@@ -24,8 +25,9 @@ function App() {
   const {currentStepIndex, step, steps, isFirstStep, isLastStep, goNextStep, goBackStep, goToStep } = useMultiStepForm([
     <PersonalInfo register={register} formErrors={errors}/>,
     <SelectPlan getValues={getValues} setValue={setValue} register={register} formErrors={errors} isPlanMonthly={isPlanMonthly} setIsPlanMonthly={setIsPlanMonthly}/>,
-    <PickAddons register={register} isPlanMonthly={isPlanMonthly}/>,
-    <Summary/>
+    <PickAddons setValue={setValue} register={register} isPlanMonthly={isPlanMonthly}/>,
+    <Summary getValues={getValues} isPlanMonthly={isPlanMonthly}/>,
+    <ThankYou/>
   ]);
   
   const [isFormPassed, setIsFormPassed] = useState(false);
@@ -40,10 +42,6 @@ function App() {
     if (!isLastStep) return goNextStep();
     alert("Form submitted succesfully!");
   };
-
-  const handleRadioChange = () => {
-    setValue('plan', { name: 'pippo', price: 1 });
-};
 
   return (
     <div className="App">
@@ -67,7 +65,6 @@ function App() {
             </button>
           )}
           </div>
-          <pre>{JSON.stringify(watch(), null, 2)}</pre>
         </form>
       </main>
     </div>

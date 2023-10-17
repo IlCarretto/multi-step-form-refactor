@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components';
 import {useForm, UseFormRegister, UseFormSetValue, Controller } from "react-hook-form";
 import { IFormValues, ValidationRules } from '../types';
+import { checkIsMonthly } from '../utils/isMonthly';
 
 type RadioProps = {
     labelContent: { planName: string, src: string},
@@ -48,7 +49,7 @@ const RadioGroup = ({labelContent, id, isMonthly, register, validation, setValue
             </LabelImg>
             <LabelContent>
                 <PlanName>{labelContent.planName}</PlanName>
-                <Price>$ {calculatedPrice}{isMonthly ? '/mo' : '/yr'}</Price>
+                <Price>$ {calculatedPrice}{checkIsMonthly(isMonthly, "/mo", "/yr")}</Price>
                 {!isMonthly && <small>2 months free</small>}
             </LabelContent>
         </Label>

@@ -1,7 +1,8 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components';
-import {UseFormRegister, useForm, Controller} from "react-hook-form";
+import {UseFormRegister, useForm, Controller, UseFormSetValue} from "react-hook-form";
 import { IFormValues } from '../types';
+import { checkIsMonthly } from '../utils/isMonthly';
 
 type ICheckbox = {
     isPlanMonthly: boolean;
@@ -9,14 +10,45 @@ type ICheckbox = {
     subtitle: string;
     id: string;
     register: UseFormRegister<IFormValues>;
+    setValue: UseFormSetValue<IFormValues>;
 }
 
-const CheckboxGroup = ({isPlanMonthly, title, subtitle, id, register}: ICheckbox) => {
+const CheckboxGroup = ({isPlanMonthly, title, subtitle, id, setValue}: ICheckbox) => {
 
+    const [additionsArray, setAdditionsArray] = useState<{name: string, price: number}[]>([]);
     const {control} = useForm();
 
     const price = id === 'online-service' ? 1 : id === 'larger-storage' || 'customizable-profile' ? 2 : 0;
-    const calculatedPrice = isPlanMonthly ? `${price}/mo` : `${price * 10}/yr`
+    const calculatedPrice = isPlanMonthly ? `${price}` : `${price * 10}`
+
+    const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked;
+        
+        const title = e.target.id;
+        const isInArray = additionsArray.findIndex((item) => item.name === title);
+        // console.log(isChecked, "isChecked");
+        // console.log(title, "addon title");
+        // console.log(isInArray, "isInArray");
+        // console.log(additionsArray, "array");
+        
+        if (isChecked) {
+            if (isInArray === -1) {
+                const newAdd = { name: title, price: Number(calculatedPrice)};
+                const updatedArray = additionsArray.concat(newAdd);
+                setAdditionsArray(updatedArray);
+                // console.log(newAdd, "new add");
+                // console.log(updatedArray, "updated");
+                setValue('additions', updatedArray);
+            }
+        } else {
+            if (isInArray !== -1) {
+                const updatedArray = additionsArray.filter((item) => item.name !== title);
+                // console.log(updatedArray, "updated remove");
+                setAdditionsArray(updatedArray);
+                setValue('additions', updatedArray);
+            }
+        }
+    }
 
   return (
     <CheckboxWrapper>
@@ -27,9 +59,11 @@ const CheckboxGroup = ({isPlanMonthly, title, subtitle, id, register}: ICheckbox
                 control={control}
                 render={() => (
                     <CheckboxInput 
-                        id={id} 
+                        id={title}
                         type='checkbox'
                         name='additions'
+                        checked={additionsArray.find((item) => item.name === title) && true}
+                        onChange={(e) => handleCheck(e)}
                     />
                 )}
                 />
@@ -37,7 +71,7 @@ const CheckboxGroup = ({isPlanMonthly, title, subtitle, id, register}: ICheckbox
                     <h5>{title}</h5>
                     <span>{subtitle}</span>
                 </CheckboxName>
-                <Footer>${calculatedPrice}</Footer>
+                <Footer>${calculatedPrice}{checkIsMonthly(isPlanMonthly, "/mo", "/yr")}</Footer>
             </LabelWrapper>
         </Label>
     </CheckboxWrapper>
