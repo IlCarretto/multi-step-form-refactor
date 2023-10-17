@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import Sidebar from './widgets/Sidebar';
+import Sidebar from './components/Sidebar';
 import PersonalInfo from './widgets/PersonalInfo';
 import { useMultiStepForm } from './hook/useMultiStepForm';
-import { useForm,SubmitHandler, Controller } from 'react-hook-form';
+import { useForm,SubmitHandler } from 'react-hook-form';
 import SelectPlan from './widgets/SelectPlan';
 import PickAddons from './widgets/PickAddons';
 import Summary from './widgets/Summary';
@@ -65,6 +65,7 @@ function App() {
             </button>
           )}
           </div>
+          {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
         </form>
       </main>
     </div>
